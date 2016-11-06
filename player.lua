@@ -8,8 +8,11 @@ function player.load()
    player.height = 10
    player.xvel = 0
    player.yvel = 0
-   player.friction = 1
-   player.speed = 500
+   player.accel = 1000
+   player.friction = 200
+   player.maxspeed = 200
+   player.xsign = 0
+   player.ysign = 0
 end
 
 --this is where the player is drawn from
@@ -22,30 +25,34 @@ end
 function player.physics(dt)
    player.x = player.x + player.xvel * dt
    player.y = player.y + player.yvel * dt
-   player.xvel = player.xvel * (1 - math.min(dt*player.friction, 1))
-   player.yvel = player.yvel * (1 - math.min(dt*player.friction, 1))
+
+   player.xsign = player.xvel > 0 and 1 or player.xvel < 0 and -1 or 0;
+   player.ysign = player.yvel > 0 and 1 or player.yvel < 0 and -1 or 0;
+
+   player.xvel = math.floor(player.xvel - player.friction * dt * player.xsign)
+   player.yvel = math.floor(player.yvel - player.friction * dt * player.ysign)
 end
 
 --this is where the movement is handled
 function player.move(dt)
    if love.keyboard.isDown("d") and
-   player.xvel < player.speed then
-      player.xvel = player.xvel + player.speed * dt
+   player.xvel < player.maxspeed then
+      player.xvel = math.ceil(player.xvel + player.accel * dt)
    end
 
    if love.keyboard.isDown("a") and
-   player.xvel > -player.speed then
-      player.xvel = player.xvel - player.speed * dt
+   player.xvel > -player.maxspeed then
+      player.xvel = math.ceil(player.xvel - player.accel * dt)
    end
 
    if love.keyboard.isDown("s") and
-   player.yvel < player.speed then
-      player.yvel = player.yvel + player.speed * dt
+   player.yvel < player.maxspeed then
+      player.yvel = math.ceil(player.yvel + player.accel * dt)
    end
 
    if love.keyboard.isDown("w") and
-   player.yvel > -player.speed then
-      player.yvel = player.yvel - player.speed * dt
+   player.yvel > -player.maxspeed then
+      player.yvel = math.ceil(player.yvel - player.accel * dt)
    end
 end
 
