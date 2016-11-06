@@ -1,0 +1,9 @@
+Requires: lua and love 2D game engine
+   sudo apt-get install lua5.2
+   sudo apt-get install love
+To execute: 'love <project directory>'
+
+w=move up
+s=move down
+a=move left
+d=move right
